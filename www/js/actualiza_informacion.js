@@ -131,8 +131,8 @@ function actualiza_informacion(tabla, url)
 			     if ((j == contador) && (tabla == 'ubicacion_programa'))
 					 {						 
 					  actualiza_progressbar('70%','100%');
-					  $('div.navigation').unblock();
 					  document.getElementById("actualiza").value="0";
+					  setTimeout(function(){$('div.navigation').unblock();},5000);					  
 /*					  if (device.platform  == 'iOS') tiempo = 15000;
 					  else tiempo = 5000;
 
