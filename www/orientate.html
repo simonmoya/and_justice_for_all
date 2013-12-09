@@ -1,0 +1,97 @@
+﻿<html class="no-js ui-mobile-rendering" lang="es">
+<head>
+      <title>Oriéntate</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery.autocomplete.min.js"></script>  
+  <script type="text/javascript" src="js/data-autocomplete.js"></script>
+  <script src="js/libs/require.js" data-main="js/mobile"></script>
+  
+  <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+
+	  <link rel="stylesheet" type="text/css" media="all" href="css/autocomplete.css">
+	  		
+        <style>
+		
+            *{
+                margin:0;
+                padding:0;
+            }
+			
+        </style>
+
+      <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css" />
+	  
+	  <script>
+
+			function onDeviceReady() 
+			{
+			 document.addEventListener("backbutton", onBackKeyDown, false);
+			}	
+
+			function onBackKeyDown() {
+				window.location = ("index.html"); 
+			}
+
+			document.addEventListener("deviceready", onDeviceReady, false);
+
+</script>
+	  
+		
+</head>
+
+<body>
+ <input type="text" id="auxiliar"> 
+
+<div id="categories" data-role="page" data-title="Oriéntate" style="background-image: url('images/fondo_2.png'); background-repeat:no-repeat; background-size:100% 100%; background-position: absolute">
+<div height=200px style="background-image: url('images/cabecera1.png'); background-repeat:no-repeat; background-size:100% 100%; background-position: absolute">
+<div> 
+<a href="index.html" rel="external"> <img src="images/regresar.png" class="imagen-link" height="60px" width="60px" align="left" style="margin: 5px 8px"></a>
+</div>
+<br><br><br><br>
+</div>
+
+    <div id="content">
+      
+      <div id="searchfield">
+	  	<label for="currency"><b><h2>Buscar Conflicto:</h2></b></label>
+        <input type="text" name="currency" class="biginput2" id="autocomplete" height="100%" width="100%">
+      </div><!-- @end #searchfield -->
+      
+      <div id="outputbox">
+        <p id="outputcontent"></p>
+      </div>
+
+ <div id="resultados" data-role="collapsible-set" data-theme="c" data-content-theme="d">
+ 
+  <div id="casa_justicia" data-role="collapsible" style="display:none;">
+   <h3><img src="images/cj.png" height="42" width="42">Casas de Justicia</h3>
+   <div id="result_1">
+    <p id="result1"></p>
+   </div> 
+ </div>    
+
+ <div id="centro_convivencia" data-role="collapsible" style="display:none;">
+  <h3><img src="images/ccc.png" height="42" width="42">&nbsp;Centros de Convivencia Ciudadana</h3>
+  <div id="result_2">
+   <p id="result2"></p>
+  </div> 
+ </div>  
+ 
+</div>	  
+	  
+    </div><!-- @end #content -->
+ <br>
+ <p><a data-role="button" data-theme="b" OnClick="abrir_opcion()">Ver Directorio</a></p>
+ <br><br>
+
+<script>
+
+ function abrir_opcion()
+ {
+  window.location = ("directorio.html");
+ }
+</script>  
+</body>
+</html>

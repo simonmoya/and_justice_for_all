@@ -1,0 +1,539 @@
+﻿<html class="no-js ui-mobile-rendering" lang="es">
+<head>
+      <title>Mapa</title>
+
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+	  	  
+	<script type="text/javascript">
+			var mapa_ancho = window.innerWidth - 50 ;
+			var mapa_alto = window.innerHeight - 100 ;
+			var sheet = document.createElement('style')
+			sheet.innerHTML = "#map_canvas { float:center; width: "+mapa_ancho+"px; height: "+mapa_alto+"px; }";
+			document.head.appendChild(sheet);
+			
+			function onDeviceReady() 
+			{
+			 document.addEventListener("backbutton", onBackKeyDown, false);
+			}	
+
+			function onBackKeyDown() {
+				regresar();
+			}
+
+			document.addEventListener("deviceready", onDeviceReady, false);
+			
+	  </script>
+	  
+
+<script type="text/javascript">
+ var db;
+ var Latdes;
+ var Lngdes;
+ var Direccion_destino;
+ var Nombre_destino;
+ var Telefono_destino;
+ var Correo_destino;
+ var Latori_1;
+ var Lngori_1;
+ var Latori;
+ var Lngori;
+ var MyOrigin ;
+ var MyDestination;
+ var directionsService;
+ var directionsDisplay;
+ var icon_destino ="Casa de Justicia";
+ var Latdes_calc;
+ var Lngdes_calc;
+ var Direccion_destino_calc;
+ var Nombre_destino_calc;
+ var Telefono_destino_calc;
+ var Correo_destino_calc;
+ var Distancia_calc=0;
+ //mientras se carga la base de datos
+ var Latdes2;
+ var Lngdes2;
+ var nom_programa;
+ var distancia;
+ distancia=1000000;
+// InicializaDatos();
+
+        function InicializaDatos() {
+     db = openDatabase("justice_for_all.db3", "1.0", "Justicia para Todos", 500000);
+    sentencia = "Select nombre_lugar, direccion_lugar, telefono_lugar, email, latitud, longitud From ubicacion_programa  where tipo_programa='"+nom_programa+"'";
+// alert("Sentencia: "+sentencia);
+
+                db.transaction( function(tx) {
+                        tx.executeSql(sentencia, [],
+                                function(tx, result){
+ //alert(result.rows.length);
+                                        for(var i=0; i < result.rows.length; i++)  
+					{
+					
+					 Latdes_calc = result.rows.item(i)['latitud'];
+					 Lngdes_calc = result.rows.item(i)['longitud'];
+					 Direccion_destino_calc = result.rows.item(i)['direccion_lugar'];
+					 Nombre_destino_calc = result.rows.item(i)['nombre_lugar'];
+					 Telefono_destino_calc = result.rows.item(i)['telefono_lugar'];
+					 Correo_destino_calc = result.rows.item(i)['email'];
+					 calcularDistancia();
+					 //alert("8"+i);
+					 if (i == (result.rows.length-1)) mostrarMapa();
+					}
+                                });
+                });
+
+
+        }
+ 
+ 
+ 
+ 
+</script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+<script type="text/javascript">
+			
+			
+	// Wait for device API libraries to load
+    //
+   // document.addEventListener("deviceready", onDeviceReady, false);
+    // device APIs are available
+    //
+function onDeviceReady() {
+	//alert("4");
+	//nom_programa="Centro de Convivencia";
+	//icon_destino="Centro de Convivencia Ciudadana";
+	 if (navigator.geolocation)
+    {
+		navigator.geolocation.getCurrentPosition(onSuccess, onError, {maximumAge:3000,timeout:15000,enableHighAccuracy:true});
+    }
+	else
+	{
+		alert("Geolocation is not supported by this browser.");
+	}
+		
+}
+
+    // onSuccess Geolocation
+    //
+
+function onSuccess(position) {
+//alert("5");
+        var element = document.getElementById('geolocation');
+        /*element.innerHTML = 'Latitude: '           + position.coords.latitude              + '<br />' +
+                            'Longitude: '          + position.coords.longitude             + '<br />' +
+                            'Altitude: '           + position.coords.altitude              + '<br />' +
+                            'Accuracy: '           + position.coords.accuracy              + '<br />' +
+                            'Altitude Accuracy: '  + position.coords.altitudeAccuracy      + '<br />' +
+                            'Heading: '            + position.coords.heading               + '<br />' +
+                            'Speed: '              + position.coords.speed                 + '<br />' +
+                            'Timestamp: '          + position.timestamp                    + '<br />';*/
+		Latori_1=position.coords.latitude;
+		Lngori_1=position.coords.longitude;
+		Latori=Latori_1;
+		Lngori=Lngori_1;
+		//alert("6");
+		InicializaDatos();
+    }
+
+    // onError Callback receives a PositionError object
+    //
+function onError(error) {
+	if(error.code==1)
+	{
+		//alert("sin punto de origen");
+		ubicapuntos();
+		//alert("No es posible ingresar a la funcionalidad por denegar permisos de ubicación");
+		//window.location="index.html";
+/* $.Zebra_Dialog('No es posible ingresar a la funcionalidad por denegar permisos de ubicación', {
+    'type':     'error',
+    'title':    'Error en la generación del Mapa',
+    'buttons':  ['Aceptar'],
+    'onClose':  function(caption) {
+     window.location="index.html";
+    }
+});*/
+	}
+	else if(error.code==3)
+	{
+//		alert("Para visualizar Mi ubicación: \n  * Activar la ubicación de redes móviles y GPS \n  * Activar Wi-Fi");
+		ubicapuntos();
+/* $.Zebra_Dialog('<strong>1.</strong>Compruebe su conexión a Internet<br><strong>2.</strong>Compruebe la activación de Ubicación por GPS y/o WI FI<br><strong>3.</strong>Si persiste el problema, reinicie su dispositivo móvil', {
+    'type':     'error',
+    'title':    'Timeout - Error en la generación del Mapa',
+    'buttons':  ['Aceptar'],
+    'onClose':  function(caption) {
+     window.location="index.html";
+    }
+});*/
+
+		
+	}
+	else if(error.code==2)
+	{
+		alert("No es posible obtener Mi ubicación debido a problemas de velocidad en la conexión de datos");
+		ubicapuntos();
+ /*$.Zebra_Dialog('<strong>1.</strong>Compruebe su conexión a Internet<br><strong>2.</strong>Compruebe la activación de Ubicación por GPS y/o WI FI<br><strong>3.</strong>Si persiste el problema, reinicie su dispositivo móvil', {
+    'type':     'error',
+    'title':    'Posibles causas de error en la generación del Mapa',
+    'buttons':  ['Aceptar'],
+    'onClose':  function(caption) {
+     window.location="index.html";
+    }
+});*/
+	}
+	else {
+		alert("error");
+        //alert('code: '    + error.code    + '\n' +
+         //     'message: ' + error.message + '\n');
+		//window.location="index.html";
+    }
+}
+
+
+function pintarRuta(){
+	var MyOrigin = new google.maps.LatLng(Latori, Lngori);
+	var MyDestination = new google.maps.LatLng(Latdes, Lngdes);
+	var directionsService = new google.maps.DirectionsService();
+	var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+	mostrarMapa();
+}
+
+var rendererOptions = {draggable: true, suppressMarkers : true};
+//Simon Bolivar
+Latori = 4.659068;
+Lngori = -74.09354;
+//tunal
+Latdes2 = 4.5679792;
+Lngdes2 = -74.1353177;
+//barrios unidos
+Latdes2 = 4.658042;
+Lngdes2 = -74.076876;
+//destino parque nacional
+Latdes = 4.624164;
+Lngdes = -74.060066;
+
+			var MyOrigin = new google.maps.LatLng(Latori, Lngori);
+			var MyDestination = new google.maps.LatLng(Latdes, Lngdes);
+			var directionsService = new google.maps.DirectionsService();
+			var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);			
+
+function initialize() 
+{
+//alert("1");
+var url = location.href;
+	var url = location.href;
+	var index = url.indexOf("?");
+	
+	db = openDatabase("justice_for_all.db3", "1.0", "Justicia para Todos", 500000);
+    sentencia = "select valor_parametro from parametro where codigo_tparametro = 5";
+               db.transaction( function(tx) {
+                        tx.executeSql(sentencia, [],
+                                function(tx, result){
+									     if (result.rows.item(0)['valor_parametro']=="Casa de Justicia")
+										 {
+										  nom_programa="Casa de Justicia";
+										  icon_destino="Casa de Justicia";
+										 }
+										 else
+										 {
+										  nom_programa="Centro de Convivencia";
+										  icon_destino="Centro de Convivencia Ciudadana";
+										 }
+	//alert("3");						 
+										 //alert(result.rows.item(0)['valor_parametro']);
+										 onDeviceReady();		
+	//mostrarMapa();	
+//InicializaDatos();	
+								})
+							})
+}
+						
+function Dist(lat1, lon1, lat2, lon2)
+  {
+  rad = function(x) {return x*Math.PI/180;}
+
+  var R     = 6378.137;                          //Radio de la tierra en km
+  var dLat  = rad( lat2 - lat1 );
+  var dLong = rad( lon2 - lon1 );
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin
+
+(dLong/2) * Math.sin(dLong/2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c;
+  return d.toFixed(3);                      //Retorna tres decimales
+}
+
+
+
+function calcularDistancia() {
+		if (Latdes_calc<-91 || Latdes_calc>91)
+		{
+			alert("latitud errada "+Nombre_destino);
+			//return false;
+		}
+		if (Lngdes_calc<-181 || Lngdes_calc>181){
+			alert("longitud errada "+Nombre_destino);
+			//return false;
+		}
+		
+		Distancia_calc = Dist(Latori, Lngori, Latdes_calc, Lngdes_calc);   //Retorna numero en Km
+		if (parseFloat(Distancia_calc) < parseFloat(distancia) )
+		{
+			distancia = Distancia_calc;
+			Latdes=Latdes_calc;
+			Lngdes=Lngdes_calc;
+			Direccion_destino = Direccion_destino_calc;
+			Nombre_destino = Nombre_destino_calc;
+			Telefono_destino = Telefono_destino_calc;
+			Correo_destino = Correo_destino_calc;
+		}
+}
+
+			
+function mostrarMapa(){	
+			MyOrigin = new google.maps.LatLng(Latori, Lngori);
+			MyDestination = new google.maps.LatLng(Latdes, Lngdes);
+			directionsService = new google.maps.DirectionsService();
+			directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+			//alert("motrar mapa");
+			
+			var myLatlng = new google.maps.LatLng(4.599047, -74.080917);
+			// Se carga el mapa de Colombia
+			var myOptions = {
+			  zoom: 5,
+			  center: myLatlng,
+			  mapTypeId: google.maps.MapTypeId.ROADMAP,
+			  disableDefaultUI: false,
+			  scrollwheel: true,
+			  draggable: true,
+			  navigationControl: true,
+			  mapTypeControl: false,
+			  scaleControl: true,
+			  disableDoubleClickZoom: false
+			};
+			
+				var mtv = new google.maps.LatLng(Latori, Lngori);
+				showDirections();
+				map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+				//COLOCA EL ICONO DEL ORIGEN
+				var origen = new google.maps.Marker({
+				position: new google.maps.LatLng(Latori, Lngori),
+				icon: 'images/origen.png',
+				map: map
+				});
+				//UBICA EL PUNTO ORIGEN
+				var infowindow = new google.maps.InfoWindow({
+				map: map,
+				position: new google.maps.LatLng(Latori, Lngori),
+				});
+				//EVENTO CUANDO SE DA CLICK SOBRE EL PUNTO ORIGEN
+				google.maps.event.addListener(origen, 'click', function() {
+					var dialogo = "Usted está aqui";
+					var infowindow = new google.maps.InfoWindow({
+					map: map,
+					position: new google.maps.LatLng(Latori, Lngori),
+					content: dialogo										
+					});
+				});				
+				
+				//COLOCA EL ICONO DEL DESTINO
+				if (icon_destino =="Casa de Justicia") {
+					var destino = new google.maps.Marker({
+					position: new google.maps.LatLng(Latdes, Lngdes),
+					icon: 'images/cj.png',
+					map: map
+					});
+				}
+				else
+				{
+					var destino = new google.maps.Marker({
+					position: new google.maps.LatLng(Latdes, Lngdes),
+					icon: 'images/ccc.png',
+					map: map
+					});
+				}
+				//UBICA EL PUNTO DESTINO
+				var infowindow = new google.maps.InfoWindow({
+				map: map,
+				position: new google.maps.LatLng(Latdes, Lngdes),
+				});
+				//EVENTO CUANDO SE DA CLICK SOBRE EL PUNTO DESTINO
+				google.maps.event.addListener(destino, 'click', function() {
+					var dialogo = mostrarInfo(Direccion_destino, Nombre_destino, Telefono_destino, Correo_destino);
+					var infowindow = new google.maps.InfoWindow({
+					map: map,
+					position: new google.maps.LatLng(Latdes, Lngdes),
+					content: dialogo										
+					});
+				});
+				
+						
+				
+				directionsDisplay.setMap(map);
+				//la siguiente lÃ­nea muestra los pasos a dar para llegar al destino
+				//directionsDisplay.setPanel(document.getElementById("directions-panel"));
+
+			}
+			
+			
+function mostrarMapa2(){	
+			MyOrigin = new google.maps.LatLng(Latori, Lngori);
+			MyDestination = new google.maps.LatLng(Latdes, Lngdes);
+			directionsService = new google.maps.DirectionsService();
+			directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+			//alert("motrar mapa");
+			
+			var myLatlng = new google.maps.LatLng(4.599047, -74.080917);
+			// Se carga el mapa de Colombia
+			var myOptions = {
+			  zoom: 5,
+			  center: myLatlng,
+			  mapTypeId: google.maps.MapTypeId.ROADMAP,
+			  disableDefaultUI: false,
+			  scrollwheel: true,
+			  draggable: true,
+			  navigationControl: true,
+			  mapTypeControl: false,
+			  scaleControl: true,
+			  disableDoubleClickZoom: false
+			};
+			
+				var mtv = new google.maps.LatLng(Latori, Lngori);
+				showDirections();
+				map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+				
+			}
+			
+var indice=0;
+var destino =[];
+var Direccion_destino1 = [];
+var Nombre_destino1 = [];
+var Telefono_destino1 = [];
+var Correo_destino1 = [];
+var Latdes1 = [];
+var Lngdes1 = [];
+
+ function ubicapuntos() {
+ //alert("entra");
+     db = openDatabase("justice_for_all.db3", "1.0", "Justicia para Todos", 500000);
+    sentencia = "Select nombre_lugar, direccion_lugar, telefono_lugar, email, latitud, longitud From ubicacion_programa  where tipo_programa='"+nom_programa+"'";
+ //alert("Sentencia: "+sentencia);
+
+                db.transaction( function(tx) {
+                        tx.executeSql(sentencia, [],
+                                function(tx, result){
+ //alert(result.rows.length);
+                                        for(var i=0; i < result.rows.length; i++)  
+										//for(var i=0; i < 2; i++) 	 
+											{
+											
+											 Latdes1[i] = result.rows.item(i)['latitud'];
+											 Lngdes1[i] = result.rows.item(i)['longitud'];
+											 Direccion_destino1[i] = result.rows.item(i)['direccion_lugar'];
+											 Nombre_destino1[i] = result.rows.item(i)['nombre_lugar'];
+											 Telefono_destino1[i] = result.rows.item(i)['telefono_lugar'];
+											 Correo_destino1[i] = result.rows.item(i)['email'];
+											 //calcularDistancia();
+											 //alert("8"+i);
+											 indice=i;
+											 if(i==0) mostrarMapa2();
+											 ingresapunto(i);
+											}
+                                });
+                });
+
+
+        }
+			
+function ingresapunto(var1) {		
+//COLOCA EL ICONO DEL DESTINO
+				if (icon_destino =="Casa de Justicia") {
+					destino[var1] = new google.maps.Marker({
+					position: new google.maps.LatLng(Latdes1[var1], Lngdes1[var1]),
+					icon: 'images/cj.png',
+					map: map
+					});
+				}
+				else
+				{
+					destino[var1] = new google.maps.Marker({
+					position: new google.maps.LatLng(Latdes1[var1], Lngdes1[var1]),
+					icon: 'images/ccc.png',
+					map: map,
+					title: Nombre_destino+"\n"+Direccion_destino,
+					});
+				}
+				//UBICA EL PUNTO DESTINO
+				var infowindow = new google.maps.InfoWindow({
+				map: map,
+				position: new google.maps.LatLng(Latdes1[var1], Lngdes1[var1]),
+				});
+				//EVENTO CUANDO SE DA CLICK SOBRE EL PUNTO DESTINO
+					google.maps.event.addListener(destino[var1], 'click', function() {
+						var dialogo = mostrarInfo(Direccion_destino1[var1], Nombre_destino1[var1], Telefono_destino1[var1], Correo_destino1[var1]);
+						//var dialogo = Nombre_destino1[var1];
+						var infowindow = new google.maps.InfoWindow({
+						map: map,
+						position: new google.maps.LatLng(Latdes1[var1], Lngdes1[var1]),
+						content: dialogo										
+						});
+					});
+}
+						
+function showDirections() {
+  
+  var request = {
+	origin:MyOrigin,
+	destination:MyDestination,
+	travelMode: google.maps.TravelMode.DRIVING
+  };
+
+  directionsService.route(request, function(result, status) {
+	if (status == google.maps.DirectionsStatus.OK) {
+	  directionsDisplay.setDirections(result);
+	}
+  });
+}
+
+function mostrarInfo (r_direc, r_nombre,r_tel,r_correo) {
+	var prueba = 	'<table style="font-size:11px"><tr><td style="font-weight:bold; font-size:10px">Nombre: </td><td>'+r_nombre+'</td></tr>'+
+					'<tr><td style="font-weight:bold">Direccion: </td><td>'+r_direc+'</td></tr>'+
+					'<tr><td style="font-weight:bold">Telefono: </td><td>'+r_tel+'</td></tr>'+
+					'<tr><td style="font-weight:bold">Correo: </td><td>'+r_correo+'</td></tr></table>';
+	return prueba;
+	
+} 
+
+ function regresar()
+ {
+  window.history.back();
+ }
+
+		
+</script>
+
+</head>
+	
+<body onload="initialize();" onresize="window.location.reload();">
+<div id="categories" data-role="page" data-title="Mapa" style="background-image: url('images/fondo_2.png'); background-repeat:no-repeat; background-size:100% 100%; background-position: absolute">
+<div height=200px style="background-image: url('images/cabecera8.png'); background-repeat:no-repeat; background-size:100% 100%; background-position: absolute">
+<div> 
+<img src="images/regresar.png" class="imagen-link" height="60px" width="60px" align="left" style="margin: 5px 8px" OnClick="regresar()">
+</div>
+<br><br><br><br>
+</div>
+<center><div id="container" style="width: auto; height: auto; margin: auto auto"></div></center>
+
+<div data-role="content" >
+<div id='top_content'>
+				<!--<input type="button" value="Get Me Directions" onClick="showDirections();">   -->
+</div>
+<center>
+<div id="map_canvas"></div></center>
+	<div id="directions-panel">
+	<!--Directions displayed here:	-->
+	</div>
+	</div><!-- /content -->
+	</body>
+</html>

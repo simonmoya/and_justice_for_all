@@ -1,0 +1,457 @@
+﻿<html class="no-js ui-mobile-rendering" lang="es">
+<head>
+      <title>Justicia para Todos</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+		<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="js/zebra_dialog.js"></script>
+		<script type="text/javascript" src="js/carrusel.js"></script>
+		<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+
+		<!-- Librería empleada en la Construcción del Menú		-->
+		<script type="text/javascript" src="js/jquery.mobile-1.3.1.js"></script>		
+		<link rel="stylesheet"  href="css/jquery.mobile-1.3.1.min.css">
+        <link rel="stylesheet" href="css/zebra_dialog.css" type="text/css">
+        <link rel="stylesheet" href="css/style_menu.css" type="text/css" media="screen"/>
+		<link rel="stylesheet" type="text/css" href="css/carrusel.css">
+        <link rel="stylesheet" type="text/css" href="css/progressbar.css" />
+		
+        <style>
+            *{
+                margin:0;
+                padding:0;
+            }
+
+		.meter { 
+			height: 20px;  /* Can be anything */
+			width: 98%;			
+			-moz-border-radius: 25px;
+			-webkit-border-radius: 25px;
+			border-radius: 25px;
+			padding: 0px;
+			-webkit-box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+			-moz-box-shadow   : inset 0 -1px 1px rgba(255,255,255,0.3);
+			box-shadow        : inset 0 -1px 1px rgba(255,255,255,0.3);
+		}
+		.meter > span {
+			display: block;
+			height: 100%;
+			   -webkit-border-top-right-radius: 8px;
+			-webkit-border-bottom-right-radius: 8px;
+			       -moz-border-radius-topright: 8px;
+			    -moz-border-radius-bottomright: 8px;
+			           border-top-right-radius: 8px;
+			        border-bottom-right-radius: 8px;
+			    -webkit-border-top-left-radius: 20px;
+			 -webkit-border-bottom-left-radius: 20px;
+			        -moz-border-radius-topleft: 20px;
+			     -moz-border-radius-bottomleft: 20px;
+			            border-top-left-radius: 20px;
+			         border-bottom-left-radius: 20px;
+			background-color: rgb(43,194,83);
+			background-image: -webkit-gradient(
+			  linear,
+			  left bottom,
+			  left top,
+			  color-stop(0, rgb(43,194,83)),
+			  color-stop(1, rgb(84,240,84))
+			 );
+			background-image: -moz-linear-gradient(
+			  center bottom,
+			  rgb(43,194,83) 37%,
+			  rgb(84,240,84) 69%
+			 );
+			-webkit-box-shadow: 
+			  inset 0 2px 9px  rgba(255,255,255,0.3),
+			  inset 0 -2px 6px rgba(0,0,0,0.4);
+			-moz-box-shadow: 
+			  inset 0 2px 9px  rgba(255,255,255,0.3),
+			  inset 0 -2px 6px rgba(0,0,0,0.4);
+			box-shadow: 
+			  inset 0 2px 9px  rgba(255,255,255,0.3),
+			  inset 0 -2px 6px rgba(0,0,0,0.4);
+			position: relative;
+			overflow: hidden;
+		}
+		.meter > span:after, .animate > span > span {
+			content: "";
+			position: absolute;
+			top: 0; left: 0; bottom: 0; right: 0;
+			background-image: 
+			   -webkit-gradient(linear, 0 0, 100% 100%, 
+			      color-stop(.25, rgba(255, 255, 255, .2)), 
+			      color-stop(.25, transparent), color-stop(.5, transparent), 
+			      color-stop(.5, rgba(255, 255, 255, .2)), 
+			      color-stop(.75, rgba(255, 255, 255, .2)), 
+			      color-stop(.75, transparent), to(transparent)
+			   );
+			background-image: 
+				-moz-linear-gradient(
+				  -45deg, 
+			      rgba(255, 255, 255, .2) 25%, 
+			      transparent 25%, 
+			      transparent 50%, 
+			      rgba(255, 255, 255, .2) 50%, 
+			      rgba(255, 255, 255, .2) 75%, 
+			      transparent 75%, 
+			      transparent
+			   );
+			z-index: 1;
+			-webkit-background-size: 50px 50px;
+			-moz-background-size: 50px 50px;
+			-webkit-animation: move 2s linear infinite;
+			   -webkit-border-top-right-radius: 8px;
+			-webkit-border-bottom-right-radius: 8px;
+			       -moz-border-radius-topright: 8px;
+			    -moz-border-radius-bottomright: 8px;
+			           border-top-right-radius: 8px;
+			        border-bottom-right-radius: 8px;
+			    -webkit-border-top-left-radius: 20px;
+			 -webkit-border-bottom-left-radius: 20px;
+			        -moz-border-radius-topleft: 20px;
+			     -moz-border-radius-bottomleft: 20px;
+			            border-top-left-radius: 20px;
+			         border-bottom-left-radius: 20px;
+			overflow: hidden;
+		}
+		
+		.animate > span:after {
+			display: none;
+		}
+		
+		@-webkit-keyframes move {
+		    0% {
+		       background-position: 0 0;
+		    }
+		    100% {
+		       background-position: 50px 50px;
+		    }
+		}
+		
+		.orange > span {
+			background-color: #f1a165;
+			background-image: -moz-linear-gradient(top, #f1a165, #f36d0a);
+			background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #f1a165),color-stop(1, #f36d0a));
+			background-image: -webkit-linear-gradient(#f1a165, #f36d0a); 
+		}
+		
+		.blue > span {
+			background-color: #200060;
+			background-image: -moz-linear-gradient(top, #200060, #2080ff);
+			background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #200060),color-stop(1, #2080ff));
+			background-image: -webkit-linear-gradient(#200060, #2080ff);
+		}
+		
+		.nostripes > span > span, .nostripes > span:after {
+			-webkit-animation: none;
+			background-image: none;
+		}
+			
+        </style>
+
+	<script type="text/javascript" charset="utf-8">
+	
+function onDeviceReady() 
+{
+ document.addEventListener("backbutton", onBackKeyDown, false);
+ inicializa_db(checkConnection()); 
+}	
+
+function onBackKeyDown() {
+	navigator.app.exitApp();
+}
+
+document.addEventListener("deviceready", onDeviceReady, false);
+	
+	 function updateBackground() 
+	  {
+	   screenWidth = $(window).width();
+	   screenHeight = $(window).height();
+	   var bg = jQuery("#bg");
+ 
+// Proporcion horizontal/vertical. En este caso la imagen es cuadrada
+	   ratio = 1;
+ 
+	   if (screenWidth/screenHeight > ratio) 
+	   {
+		$(bg).height("100%");
+		$(bg).width("100%");
+	   } 
+	   else 
+	   {
+		$(bg).width("100%");
+		$(bg).height("100%");
+	   }
+ 
+// Si a la imagen le sobra anchura, la centramos a mano
+	   if ($(bg).width() > 0) 
+	   {
+		$(bg).css('left', (screenWidth - $(bg).width()) / 2);
+	   }
+	  }
+
+	  $(document).ready(function() 
+	  {
+// Actualizamos el fondo al cargar la pagina
+	   updateBackground();
+	   $(window).bind("resize", function() 
+	   {
+// Y tambien cada vez que se redimensione el navegador
+	    updateBackground();
+	   });
+	  });
+
+	  var vent_alto = $(window).height();
+	  var vent_ancho = $(window).width();
+	  
+	  var ventana_alto = $(window).height();
+	  var ventana_alto2 = $(window).height();
+	  var ventana_ancho2= $(window).width();
+	  if (ventana_alto2 <= 302) 
+	  {
+	   var ventana_alto = 303;
+	   ventana_alto2 = 353;
+	  } 
+	  var ventana_medio = ventana_alto2/2;
+  
+	  if ($(window).width() < $(window).height()) factor = 6.22;
+	 else factor = 6;
+
+	 
+	 
+	 var ventana_ancho = ($(window).width()/4)-20;
+	 document.write('<style> .shop{top:'+
+				    ventana_alto/10*factor+'px;left:'+
+				    (ventana_ancho/10*3.5)+'px;}.youtube{top:'+
+			         ventana_alto/10*factor+'px;left:'+
+			         ventana_ancho/10*10+'px;} .fav{top:'+
+				     ventana_alto/10*factor+'px;left:'+
+	                (ventana_ancho/10*16.5)+'px;} .home{top:'+
+				    ventana_alto/10*factor+'px;left:'+
+					ventana_ancho/10*23+'px;} .user{top:'+
+					ventana_alto/10*factor+'px;left:'+
+					(ventana_ancho/10*29.5)+'px;} .actual{top:'+
+					ventana_alto/10*factor+'px;left:'+
+					(ventana_ancho/10*36)+'px;}</style>');	
+ventana_alto3 = ventana_alto2 - (18*factor);					
+ventana_alto3 = (ventana_alto/10)*6.5;
+ventana_ancho2= (ventana_ancho2-300)/2;
+
+    // PhoneGap esta listo, y ahora se pueden hacer llamadas a los métodos
+    //
+
+function ejecuta_actualizacion()
+{
+	if (checkConnection() == 1) {
+      document.getElementById("actualiza").value="1";	
+	  actualiza_set_datos();
+	}
+	else  $.Zebra_Dialog('<strong>No es posible Actualizar Justicia para Todos sin Conexión a Internet</strong>', {
+		'type':     'error',
+		'title':    'Sin Conexión a Internet'
+	});
+} 
+	
+	
+function abrir_opcion(pagina,obligatorio) 
+{ 
+if (obligatorio == 0) window.location = (pagina); 
+if ((checkConnection() == 1) || (obligatorio == 0)) {
+	window.location = (pagina); 
+}
+else  $.Zebra_Dialog('<strong>No es posible ejecutar esta funcionalidad sin Conexión a Internet</strong>', {
+    'type':     'error',
+    'title':    'Sin Conexión a Internet'
+});
+} 
+
+function abrir_twitter()
+{
+	if (checkConnection() == 1) {
+
+	 if (device.platform  == 'iOS') 
+	 {
+      window.open('https://mobile.twitter.com/MinjusticiaCo', '_blank', 'location=yes','closebuttoncaption=Regresar');
+	 }
+	 else 
+	 {
+      //window.open('https://mobile.twitter.com/MinjusticiaCo', '_self', 'location=yes','closebuttoncaption=Regresar');
+	  window.open('https://mobile.twitter.com/MinjusticiaCo', '_system', 'location=yes','closebuttoncaption=Regresar');
+//	  window.plugins.childBrowser.showWebPage('https://mobile.twitter.com/MinjusticiaCo',{ showLocationBar: true });
+	 } 
+	}
+	else  $.Zebra_Dialog('<strong>No es posible ejecutar esta funcionalidad sin Conexión a Internet</strong>', {
+		'type':     'error',
+		'title':    'Sin Conexión a Internet'
+	});
+/*
+ if (device.platform  == 'iOS') {
+	if (checkConnection() == 1) {
+		window.open('https://mobile.twitter.com/MinjusticiaCo', '_blank', 'location=yes');
+	}
+	else  $.Zebra_Dialog('<strong>No es posible ejecutar esta funcionalidad sin Conexión a Internet</strong>', {
+		'type':     'error',
+		'title':    'Sin Conexión a Internet'
+	});
+}
+ else {
+	 pagina="sigueme.html";
+	 abrir_opcion("sigueme.html");
+ }
+ */
+} 
+
+// Escuchar cambios de orientación
+window.addEventListener("orientationchange", function() {
+    // Hacer algo cuando cambia la orientación
+//Verifica si el Flag de actualización está activo
+	 if (document.getElementById("actualiza").value == "1")
+	 {
+//Determina la imagen a visualizar	 
+	  if ((window.orientation == 0) || (window.orientation == 180)) {
+		document.getElementById("bg").src="images/fondo.png";		
+	  }
+	  else {
+		document.getElementById("bg").src="images/fondo_ancho.png";
+	  }
+//Presenta tanto el DIV como la imagen al 100% mientras actualiza en el caso que se gire el dispositivo
+      if (device.platform  == 'iOS') 
+	  {
+	   $(navigata).height($(window).height()-20);
+	   $(bg).height($(window).height()-20);
+	  }
+	  else
+	  {
+	   $(navigata).height("100%");
+	   $(bg).height("100%");
+	  } 
+//Determina si existe el elemento carrusel para ocultarlo
+	  if ($('#divCarousel').length) $(divCarousel).hide();
+	  else
+	  {
+//De no existir el elemento carrusel, se asume la existencia de los iconos los cuales se ocultan	  
+	   $(opcion1).hide();
+	   $(opcion2).hide();
+	   $(opcion3).hide();
+	   $(opcion4).hide();
+	   $(opcion5).hide();
+	   $(opcion6).hide();
+	  }
+	 }
+	 else window.location.reload();
+}, false)
+
+        function checkConnection() 
+		{
+		 if(navigator.connection.type == Connection.NONE){ 
+		  var conexion = 0;
+		  }else{
+			var conexion = 1;
+		  }
+		 return conexion;
+        }
+		
+	function reubicar()
+	{	
+    }
+
+     </script>	 		
+
+</head>
+<body> 
+<!-- <body onresize="reubicar();" > --> 
+		<script> 
+		document.write('<div class="meter nostripes" id="progressbar" width="90%" top="100px">');
+		document.write('</div>');
+		</script>
+		
+<script> document.write('<div class="navigation" id="navigata" style="min-width: auto; height: '+ventana_alto2+'px; margin: auto auto">') </script>
+<script> 
+	if ($(window).width() < $(window).height()) {
+		document.write('<img src="images/fondo.png" alt="Fondo" id="bg" style="height: '+ventana_alto2+'px; width: auto; left: 0px;">') 
+	}
+	else {
+		document.write('<img src="images/fondo_ancho.png" alt="Fondo" id="bg" style="height: '+ventana_alto2+'px; width: auto; left: 0px;">') 
+	}
+</script>
+
+<script> 
+
+  var icon_alto;				
+  var icon_ancho;
+  ventana_alto3 = ventana_alto3;
+  if ($(window).width() < $(window).height()) 
+  {
+		icon_alto = 80;				
+		icon_ancho = 65;
+		ventana_alto3 = (($(window).height())/10)*5.5;
+  }
+  else 
+  {
+		icon_alto = 80;				
+		icon_ancho = 60;
+		ventana_alto3 = (($(window).height())/10)*5.2;
+	}
+  if ($(window).width() < 490)
+  {
+	document.write('<div id="divCarousel" style="left: '+ventana_ancho2+'px; top:'+ventana_alto3+'px">')
+			document.write('<div id="divIzquierda"></div>')
+			document.write('<div id="divCentro">')
+				document.write('<ul>')
+					document.write('<li><a href="#" onclick=\'abrir_opcion("orientate.html",0);return false\'><img src="images/opcion1.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a></li>')
+					document.write('<li><a href="#" onclick=\'abrir_opcion("informate.html",1);return false\'><img src="images/opcion2.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a></li>')
+					document.write('<li><a href="#" onclick="abrir_twitter();"><img src="images/opcion3.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a></li>')
+					document.write('<li><a href="#" onclick=\'abrir_opcion("sugiereme.html",1);return false\'><img src="images/opcion4.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a></li>')
+					document.write('<li><a href="creditos.html" target="_self"><img src="images/opcion5.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a></li>')
+					document.write('<li><a href="#" onclick=\'ejecuta_actualizacion();return false\'><img src="images/opcion6.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a></li>')
+				document.write('</ul>')
+			document.write('</div>')
+			document.write('<div id="divDerecha"></div>')
+			document.write('<div class="clsSalto"></div>')
+		document.write('</div>')
+  }
+  else 
+  {
+		if ($(window).width() < $(window).height()) {
+			icon_alto = ($(window).height())/7.8;				
+			icon_ancho = ($(window).height())/10;
+		}
+		else
+		{
+			icon_alto = ($(window).height())/5.5;				
+			icon_ancho = ($(window).height())/7;
+		}
+		document.write('<div class="item shop" id="opcion1">')
+                document.write('<a href="#" onclick=\'abrir_opcion("orientate.html",0);return false\'><img src="images/opcion1.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a>')
+		document.write('</div>')
+				
+                document.write('<div class="item youtube" id="opcion2">')
+                document.write('<a href="#" onclick=\'abrir_opcion("informate.html",1);return false\'><img src="images/opcion2.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a>')
+                document.write('</div>')
+				
+                document.write('<div class="item fav" id="opcion3">')
+                document.write('<a href="#" onclick="abrir_twitter();"><img src="images/opcion3.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a>')
+                document.write('</div>')
+				
+                document.write('<div class="item home" id="opcion4">')
+                document.write('<a href="#" onclick=\'abrir_opcion("sugiereme.html",1);return false\'><img src="images/opcion4.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a>')
+                document.write('</div>')
+
+                document.write('<div class="item user" id="opcion5">')
+                document.write('<a href="creditos.html" target="_self"><img src="images/opcion5.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a>')
+                document.write('</div>')
+				
+				document.write('<div class="item actual" id="opcion6">')
+                document.write('<a href="#" onclick=\'ejecuta_actualizacion();return false\'><img src="images/opcion6.png" class="imagen-link" height="'+icon_alto+'px" width="'+icon_ancho+'px" ></a>')
+                document.write('</div>')
+				
+  }			
+
+</script> 		
+
+        <script type="text/javascript" src="js/actualiza_informacion.js"></script>
+        <script type="text/javascript" src="js/base_datos.js"></script>
+	<input id="actualiza" type="hidden" value="0">	
+    </div>	
+</body>
+</html>

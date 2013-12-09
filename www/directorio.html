@@ -1,0 +1,163 @@
+﻿<html class="no-js ui-mobile-rendering" lang="es">
+ <head>
+      <title>Búsqueda de Casas de Justicia y Centros de Convivencia Ciudadana</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+	  
+		<link rel="stylesheet" type="text/css" href="css/style_offline.css">
+		<script type="text/javascript" language="javascript" src="js/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
+		<script type="text/javascript" language="javascript" src="js/jquery-ui-tabs.js"></script>
+		<script type="text/javascript" src="js/offline.js"></script>
+		<script type="text/javascript" language="javascript" src="js/jquery.mobile-1.3.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+
+		<style type="text/css" title="currentStyle">
+			@import "css/demo_page.css";
+			@import "css/demo_table.css";
+			@import "css/jquery-ui-1.8.4.custom.css";
+			.ui-tabs .ui-tabs-panel { padding: 10px }
+		</style>		
+
+		<link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css" />
+		<script src="js/libs/require.js" data-main="js/mobile"></script>	    
+		
+<script>
+
+function onDeviceReady() 
+			{
+			 document.addEventListener("backbutton", onBackKeyDown, false);
+			}	
+
+			function onBackKeyDown() {
+				regresar();
+			}
+
+			document.addEventListener("deviceready", onDeviceReady, false);
+
+ function construye_tabla(nombre_objeto,nombre_tabla,indicador)
+ {
+  var db;
+  var html="";
+  var container = document.getElementById(nombre_objeto)
+  html += "<table border=1 id='"+nombre_tabla+"' align=center><thead><tr><th>Ubicación</th>";
+  html += "<th>Más Información</th></tr></thead><tbody>";
+  db = openDatabase("justice_for_all.db3", "1.0", "Justicia para Todos", 500000);
+
+        db.transaction( function(tx) {
+			if (indicador == 1) sql = "SELECT departamento, municipio, nombre_lugar, direccion_lugar, barrio_lugar, telefono_lugar, email FROM ubicacion_programa Where tipo_programa = 'Casa de Justicia' order by departamento, municipio, direccion_lugar";
+			else sql = "SELECT departamento, municipio, nombre_lugar, direccion_lugar, barrio_lugar, telefono_lugar, email FROM ubicacion_programa Where tipo_programa = 'Centro de Convivencia' order by departamento, municipio, direccion_lugar";	
+            tx.executeSql(sql, [],
+                function(tx, result){
+                    for(var i=0; i < result.rows.length; i++) 
+					{
+					 var propiedad="";
+					 var ubicacion="";
+					 if ((result.rows.item(i)['direccion_lugar'].length > 20) && (result.rows.item(i)['direccion_lugar'].length < 25)) propiedad = 'NOWRAP';
+					 if (result.rows.item(i)['departamento'] == result.rows.item(i)['codigo_dane_municipio']) ubicacion = result.rows.item(i)['municipio'];
+					 else ubicacion = result.rows.item(i)['departamento']+" - "+result.rows.item(i)['municipio']
+					 if (result.rows.item(i)['barrio_lugar'] == 'No Registra') direccion = result.rows.item(i)['direccion_lugar'];
+					 else direccion = result.rows.item(i)['direccion_lugar']+"<br>"+result.rows.item(i)['barrio_lugar'];
+					 html += "<tr><td "+propiedad+"><strong>"+ubicacion+"</strong><br>"+direccion;
+					 html += "</td><td><a href='#' OnClick='abre_popup("+indicador+",\""+ubicacion+"\",\""+direccion+"\",\""+result.rows.item(i)['telefono_lugar']+"\",\""+result.rows.item(i)['email']+"\")';> <br>Ver Más..</a></td></tr>";
+                    }
+		html += "</tbody><tfoot width='100%'><tr><td colspan='3'>Resultados de la Búsqueda</td></tr></tfoot></table>";
+  		container.innerHTML=html;
+ 
+                });
+
+        });  
+ }
+
+   function abre_popup(programa,ubicacion,direccion,telefono,email)
+   {
+    if (programa == 1) var html = "<b><img src='images/cj.png'>Casa de Justicia</img></b><br>";
+	else var html = "<b><img src='images/ccc.png'>Centro de Convivencia Ciudadana</img></b><br>";
+    html += "<b>"+ubicacion+"</b><br><b>Dirección</b><br>"+direccion+"<br><b>Teléfono(s)</b><br>"+telefono+"<br><b>E-mail(s)</b><br>"+email;
+	var capa = document.getElementById('contenido');
+	capa.innerHTML = html;
+	$( "#popupCloseRight" ).popup( "open", "data-position-to='window'" );
+   }
+
+ 
+			$(document).ready(function() {
+				$("#tabs").tabs( {
+					"show": function(event, ui) {
+						var table = $.fn.dataTable.fnTables(true);
+						if ( table.length > 0 ) {
+							$(table).dataTable().fnAdjustColumnSizing();
+						}
+					}
+				} );
+				
+				$('table.display').dataTable( {
+					"sScrollY": "200px",
+					"bScrollCollapse": true,
+					"bPaginate": false,
+					"bJQueryUI": true,
+					"aoColumnDefs": [
+						{ "sWidth": "10%", "aTargets": [ -1 ] }
+					]
+				} );
+			} );
+		</script>	  
+	</head>
+	<body>
+<div id="categories" data-role="page" data-title="Búsqueda de Información" style="background-image: url('images/fondo_2.png'); background-repeat:no-repeat; background-size:100% 100%; background-position: absolute">
+<div height=200px style="background-image: url('images/cabecera7.png'); background-repeat:no-repeat; background-size:100% 100%; background-position: absolute">
+<div> 
+<img src="images/regresar.png" class="imagen-link" height="60px" width="60px" align="left" style="margin: 5px 8px" OnClick="regresar()">
+</div>
+<br><br><br><br><br>
+</div>
+<br>	
+		<div id="container">
+		
+						<div id="tabs">
+					<ul>
+						<li><a href="#tabla_1"><img src="images/cj.png"></img>&nbsp;Casas de Justicia</a></li>
+						<li><a href="#tabla_2"><img src="images/ccc.png">&nbsp;Centros de Convivencia Ciudadana</a></li>
+					</ul>
+
+		
+			<div id="tabla_1" align=center>		
+				<table border=0 align=center><tr><td><input type="text" name="name" id="busqueda" /></td><td>
+				<a href="#" data-role="button" data-mini="true" data-icon="search" OnClick="javascript:busca_tabla($(tblTabla),document.getElementById('busqueda').value);">Buscar</a>
+				</td></tr></table>
+				<br>
+				<div id="tabla">
+				</div>
+				<script> 
+				construye_tabla("tabla","tblTabla",1);				
+				</script>
+			</div>
+			
+			<div id="tabla_2" align=center>
+				<table border=0 align=center><tr><td><input type="text" name="name" id="busqueda2" /></td><td>
+				<a href="#" data-role="button" data-mini="true" data-icon="search" OnClick="javascript:busca_tabla($(tblTabla2),document.getElementById('busqueda2').value);">Buscar</a>
+				</td></tr></table>
+				<br>
+				<div id="tabla2">
+				</div>
+				<script> 
+				construye_tabla("tabla2","tblTabla2",2);				
+				</script>
+			</div>			
+			</div>
+		</div>
+		<div data-role="popup" id="popupCloseRight" class="ui-content" style="max-width:280px" align="center">
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+			<div id="contenido"></div>
+		</div>	
+	
+		
+	</div>
+
+<script>
+ function regresar()
+ {
+  window.history.back();
+ }
+</script>
+	
+	</body>
+</html>
