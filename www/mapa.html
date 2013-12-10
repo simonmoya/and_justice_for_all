@@ -105,7 +105,7 @@ function onDeviceReady() {
 	//icon_destino="Centro de Convivencia Ciudadana";
 	 if (navigator.geolocation)
     {
-		navigator.geolocation.getCurrentPosition(onSuccess, onError, {maximumAge:3000,timeout:15000,enableHighAccuracy:true});
+		navigator.geolocation.getCurrentPosition(onSuccess, onError, {maximumAge:3000,timeout:30000,enableHighAccuracy:true});
     }
 	else
 	{
@@ -156,7 +156,7 @@ function onError(error) {
 	}
 	else if(error.code==3)
 	{
-//		alert("Para visualizar Mi ubicación: \n  * Activar la ubicación de redes móviles y GPS \n  * Activar Wi-Fi");
+		alert("No es posible obtener Mi ubicación debido a problemas de velocidad en la conexión de datos");
 		ubicapuntos();
 /* $.Zebra_Dialog('<strong>1.</strong>Compruebe su conexión a Internet<br><strong>2.</strong>Compruebe la activación de Ubicación por GPS y/o WI FI<br><strong>3.</strong>Si persiste el problema, reinicie su dispositivo móvil', {
     'type':     'error',
@@ -171,7 +171,7 @@ function onError(error) {
 	}
 	else if(error.code==2)
 	{
-		alert("No es posible obtener Mi ubicación debido a problemas de velocidad en la conexión de datos");
+//		alert("Para visualizar Mi ubicación: \n  * Activar la ubicación de redes móviles y GPS \n  * Activar Wi-Fi");
 		ubicapuntos();
  /*$.Zebra_Dialog('<strong>1.</strong>Compruebe su conexión a Internet<br><strong>2.</strong>Compruebe la activación de Ubicación por GPS y/o WI FI<br><strong>3.</strong>Si persiste el problema, reinicie su dispositivo móvil', {
     'type':     'error',

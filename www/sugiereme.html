@@ -76,13 +76,13 @@
  
  function sendEmail(){
 		if (document.getElementById("t_nombre").value!=""){
-			if (document.getElementById("t_sugerencia").value!=""){
-				if (isNaN(document.getElementById("t_telefono").value)) {
-					alert("Error:\nEste campo debe tener sólo números.");
-					return false;
-					}
-				else {
-					if (document.getElementById("t_telefono").value!=""){
+		 if (isNaN(document.getElementById("t_telefono").value)) {
+			 alert("Error:\nEl campo teléfono debe ser diligenciado solo con números");
+			 return false;
+			}
+		    else 
+			if (document.getElementById("t_telefono").value!=""){
+					if (document.getElementById("t_sugerencia").value!=""){
 					 //variables para enviar el correo
 					 var texto = document.getElementById("t_sugerencia").value;
 					 var asunto ="Sugerencia Justicia para Todos";
@@ -101,11 +101,10 @@
 					window.location="index.html";
 					}
 					else
-						alert ("Debe diligenciar un teléfono");
-				}
+					alert ("Debe diligenciar la sugerencia");	
 			}
 			else
-				alert ("Debe diligenciar la sugerencia");
+				alert ("Debe diligenciar un teléfono");
 		}
 		else 
 			alert ("Debe diligenciar el Nombre");
